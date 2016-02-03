@@ -1,9 +1,6 @@
 # CodeAnywhere-OpenShift
 Trying to automate setting up OpenShift Tools on CodeAnywhere 
 
-## Prerequisites
-You need a CodeAnywhere account to do this.
-
 ## Usage
 Open CodeAnywhere Editor[1] and create a new connection:
 File > New Connection > GitHub
