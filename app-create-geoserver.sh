@@ -8,5 +8,5 @@ unzip geoserver-2.8.2-war.zip
 rm geoserver-2.8.2-war.zip
 unzip geoserver.war -d webapps\geoserver
 rm geoserver.war
-cp -r ../.openshift .
+cp --recursive --preserve=mode ../.openshift .
 
