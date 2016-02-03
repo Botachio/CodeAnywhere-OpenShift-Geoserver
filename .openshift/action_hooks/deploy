@@ -1,0 +1,3 @@
+#!/bin/bash
+
+touch "$OPENSHIFT_DATA_DIR/deploy.dummy"
