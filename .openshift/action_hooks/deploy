@@ -1,7 +1,5 @@
 #!/bin/bash
 
-touch "$OPENSHIFT_DATA_DIR/deploy.dummy"
-
 #### This little script copies over the geoserver data directory
 #### from the repository if it doesn't already exist
 # source: https://github.com/thesteve0/geoserver-on-openshift
