@@ -11,7 +11,7 @@ In the next dialog choose a Ruby stack and click CREATE.
 It may be possible to let CodeAnywhere choose the correct stack automatically...
 
 Start the setup script using ``./setup`` in the default working directory.
-After installing the ``rhc`` Ruby gem this starts ``rhc setup``.After
+After installing the ``rhc`` Ruby gem this starts ``rhc setup``.
 
 - Enter server hostname (if not default).
 - Enter OpenShift username (email).
