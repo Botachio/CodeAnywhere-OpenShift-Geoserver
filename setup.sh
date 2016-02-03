@@ -1,4 +1,6 @@
 #!/bin/bash
 
-echo THIS TEST IS OK
+echo Setting up OpenShift client tools
+gem install rhc
+rhc setup
 
