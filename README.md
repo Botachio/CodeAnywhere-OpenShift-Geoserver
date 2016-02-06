@@ -45,3 +45,6 @@ This performs the following actions:
 
 **After deploying Geoserver it is important to go to the web interface,
 log on using default credentials for the 'admin' account and change it's password!**
+
+# PostGIS
+Work in progress...
