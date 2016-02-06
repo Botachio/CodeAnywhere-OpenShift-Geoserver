@@ -29,6 +29,7 @@ Open CodeAnywhere Editor and connect to previously configured Container.
 This can be one created using the instructions above, or from a Custom Stack with OpenShift client tools set up.
 
 In the latter case **this** repository needs to be pulled from Github before continuing.
+e.g. ``git remote add github <repository ssh connectstring>``
 
 Start ``./app-create-geoserver.sh`` in the default working directory.
 This performs the following actions: 
