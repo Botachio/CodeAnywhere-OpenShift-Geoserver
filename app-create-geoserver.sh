@@ -9,7 +9,7 @@ unzip geoserver-2.8.2-war.zip
 rm geoserver-2.8.2-war.zip
 unzip geoserver.war -d webapps/geoserver
 rm geoserver.war
-cp --recursive --preserve=mode ../openshift-config/. ./.openshift/
+cp --recursive --preserve=mode ../resources/openshift-config/. ./.openshift/
 git add -A .
 git commit -am "scripted app creation"
 git push
