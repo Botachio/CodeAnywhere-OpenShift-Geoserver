@@ -25,6 +25,9 @@ unzip ../geoserver.war -d webapps/ROOT
 echo Inject OpenShift configuration action hooks into repository
 cp --recursive --preserve=mode ../resources/openshift-config/. ./.openshift/
 
+echo Inject Geoserver configuration into data directory
+cp --recursive --preverve=mode ../resources/geoserver-config/. ./webapps/ROOT/data/
+
 echo Commit changes to repository
 git add -A .
 git commit -am "scripted app creation"
