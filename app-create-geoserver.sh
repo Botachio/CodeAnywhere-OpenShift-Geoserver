@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo Create and configure scaling OpenShift application
+#rhc app create geoserver tomcat7 postgresql-9 --gear-size small.highcpu --region aws-eu-west-1 --repo OpenShift-repository
 rhc app create geoserver tomcat7 postgresql-9 --scaling --gear-size small.highcpu --region aws-eu-west-1 --repo OpenShift-repository
 #rhc cartridge scale tomcat7 --app geoserver --max 1
 
@@ -18,7 +19,8 @@ echo Prevent Maven build on deploy
 rm pom.xml
 
 echo Extract Geoserver webarchive into webapps directory
-unzip ../geoserver.war -d webapps/geoserver
+unzip ../geoserver.war -d webapps/ROOT
+# seems geoserver needs to be ROOT application for HAProxy to work...
 
 echo Inject OpenShift configuration action hooks into repository
 cp --recursive --preserve=mode ../resources/openshift-config/. ./.openshift/
