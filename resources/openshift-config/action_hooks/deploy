@@ -5,6 +5,6 @@
 # source: https://github.com/thesteve0/geoserver-on-openshift
 
 if ! [ -d "$OPENSHIFT_DATA_DIR/geoserver_data"  ]; then
-  cp --recursive $OPENSHIFT_REPO_DIR/webapps/ROOT/data/ $OPENSHIFT_DATA_DIR/geoserver_data/
+  mv $OPENSHIFT_REPO_DIR/webapps/ROOT/data/ $OPENSHIFT_DATA_DIR/geoserver_data/
 fi
 
