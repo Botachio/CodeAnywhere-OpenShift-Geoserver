@@ -31,3 +31,7 @@ git commit -am "scripted app creation"
 
 echo Push repository to OpenShift and trigger deployment
 git push
+
+echo Done
+
+echo Default Geoserver admin password pw=admin should be changed!
