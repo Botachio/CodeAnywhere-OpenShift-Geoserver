@@ -1,9 +1,8 @@
 #!/bin/bash
 
 echo Create and configure scaling OpenShift application
-#rhc app create geoserver tomcat7 postgresql-9 --gear-size small.highcpu --region aws-eu-west-1 --repo OpenShift-repository
 rhc app create geoserver tomcat7 postgresql-9 --scaling --gear-size small.highcpu --region aws-eu-west-1 --repo OpenShift-repository
-#rhc cartridge scale tomcat7 --app geoserver --max 1
+rhc cartridge scale tomcat7 --app geoserver --max 1
 
 if ! [ -f "geoserver.war"  ]; then
   echo Download and extract Geoserver webarchive
@@ -26,7 +25,7 @@ echo Inject OpenShift configuration action hooks into repository
 cp --recursive --preserve=mode ../resources/openshift-config/. ./.openshift/
 
 echo Inject Geoserver configuration into data directory
-cp --recursive --preverve=mode ../resources/geoserver-config/. ./webapps/ROOT/data/
+cp --recursive --preserve=mode ../resources/geoserver-config/. ./webapps/ROOT/data/
 
 echo Commit changes to repository
 git add -A .
