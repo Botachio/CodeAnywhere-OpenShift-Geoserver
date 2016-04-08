@@ -36,4 +36,8 @@ git push
 
 echo Done
 
+echo Information on database -----------------------------------------------
+rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB -e ^PG | sort'
+echo -----------------------------------------------------------------------
+
 echo Default Geoserver admin password pw=admin should be changed!
