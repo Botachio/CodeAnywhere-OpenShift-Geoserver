@@ -40,11 +40,11 @@ This performs the following actions:
 - Create a new OpenShift app for Geoserver.
 - Disable Maven build on deployment by removing ``pom.xml`` from repository.
 - Download and extract Geoserver webarchive (geoserver.war).
-- Injects some OpenShift configuration files into the repository,
-  . to move the Geoserver data directory to persistent storage on deployment, and
-  . to configure Geoserver to use this new location on application start.
-- Commits all these changes to the repository.
-- Pushes the altered repository to OpenShift to initiate deployment.
+- Inject some OpenShift configuration files into the repository,
+  - to move the Geoserver data directory to persistent storage on deployment, and
+  - to configure Geoserver to use this new location on application start.
+- Commit all these changes to the repository.
+- Push the altered repository to OpenShift to initiate deployment.
 
 **After deploying Geoserver it is important to go to the web interface,
 log on using default credentials for the 'admin' account and change it's password!**
