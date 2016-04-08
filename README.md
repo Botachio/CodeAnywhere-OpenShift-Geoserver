@@ -37,7 +37,7 @@ e.g. ``git remote add github <repository ssh connectstring>``
 Start ``./app-create-geoserver.sh`` in the default working directory.
 This performs the following actions: 
 
-- Create a new OpenShift app for Geoserver.
+- Create a new OpenShift app for Geoserver, with Tomcat and Postgres.
 - Disable Maven build on deployment by removing ``pom.xml`` from repository.
 - Download and extract Geoserver webarchive (geoserver.war).
 - Inject some OpenShift configuration files into the repository,
@@ -45,6 +45,14 @@ This performs the following actions:
   - to configure Geoserver to use this new location on application start.
 - Commit all these changes to the repository.
 - Push the altered repository to OpenShift to initiate deployment.
+
+Credentials for the Postgres database after the app is created.
+These can be used to add this database as a source to Geoserver later.
+
+The first time connecting to the OpenShift app the RSA fingerprint must be accepted.
+
+The Geoserver webarchive is only downloaded if not already present in the CodeAnywhere Container.
+If it needs to be downloaded this may take several minutes.
 
 **After deploying Geoserver it is important to go to the web interface,
 log on using default credentials for the 'admin' account and change it's password!**
