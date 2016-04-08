@@ -47,7 +47,7 @@ This performs the following actions:
 - Push the altered repository to OpenShift to initiate deployment.
 
 Credentials for the Postgres database after the app is created. These can be used to add this database as a source to Geoserver later.
-(It is also possible to retrieve these details later, by ssh-ing into the OpenShift app and examining the OPENSHIFT_POSTGRESQL_* environment variables.)
+(It is also possible to retrieve these details later, by ssh-ing into the OpenShift app and examining the OPENSHIFT_POSTGRESQL environment variables, e.g. ``rhc ssh -- 'env | grep OPENSHIFT_POSTGRESQL'``.)
 
 The first time connecting to the OpenShift app the RSA fingerprint must be accepted.
 
