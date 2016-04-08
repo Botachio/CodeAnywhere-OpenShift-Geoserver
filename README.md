@@ -1,25 +1,28 @@
 # CodeAnywhere-OpenShift
-Trying to automate setting up OpenShift on CodeAnywhere 
+Trying to automate setting up OpenShift on CodeAnywhere
+and deploy Geoserver on OpenShift from there.
 
 ## Setup
 Open CodeAnywhere Editor[1] and create a new connection:
 File > New Connection > GitHub
 
 In the dialog choose *this* repository and click NEXT.
-In the next dialog choose a Ruby stack and click CREATE.
+In the next dialog choose a Ruby stack (I prefer the Ubuntu distro) and click CREATE.
+It may be possible to let CodeAnywhere choose the correct stack automatically... This I have not tried.
 
-It may be possible to let CodeAnywhere choose the correct stack automatically...
+The CodeAnywhere container is created. This may take a minute.
+Right-click on the created container and open a SSH Terminal.
 
-Start the setup script using ``./setup.sh`` in the default working directory.
-After installing the ``rhc`` Ruby gem this starts ``rhc setup``.
+Start the setup script using ``./setup.sh`` in the default working directory (~/workspace).
 
+After installing the ``rhc`` Ruby gem this starts ``rhc setup``:
 - Enter server hostname (if not default).
 - Enter OpenShift username (email).
 - Enter OpenShift password.
 - Answer ``yes`` to create token.
-
 This process should end with ``Your client tools are now configured``.
 
+At this point the CodeAnywhere Container is ready to create and manage OpenShift deployments.
 The configured CodeAnywhere Container can be saved as a Custom Stack to ease future deployments.
 
 [1] http://codeanywhere.com/editor
