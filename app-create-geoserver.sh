@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo Create and configure scaling OpenShift application
-rhc app create geoserver tomcat7 postgresql-9 --scaling --gear-size small.highcpu --region aws-eu-west-1 --repo OpenShift-repository
+rhc app create geoserver tomcat7 postgresql-9 --scaling --gear-size small.highcpu --region aws-eu-west-1 --repo OpenShift
 rhc cartridge scale tomcat7 --app geoserver --max 1
 
 if ! [ -f "geoserver.war"  ]; then
@@ -12,7 +12,7 @@ if ! [ -f "geoserver.war"  ]; then
 fi
 
 echo Work on OpenShift repository
-cd OpenShift-repository
+cd OpenShift
 
 echo Prevent Maven build on deploy
 rm pom.xml
