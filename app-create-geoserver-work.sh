@@ -1,9 +1,10 @@
+rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB'
+# and how are we going to get these locally?
+
+# skipping till ready to configure geoserver
+cat <<SKIP_THIS >/dev/null
+
 WORKSPACE_NAME=test4
-
-rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL'
-env | grep OPENSHIFT
-
-cat <<SKIP_THIS
 
 echo Add workspace
 curl -v http://geoserver-ipsius.rhcloud.com/rest/workspaces -XPOST \
@@ -12,10 +13,6 @@ curl -v http://geoserver-ipsius.rhcloud.com/rest/workspaces -XPOST \
 -d @- << REQUEST_DATA
 <workspace><name>$WORKSPACE_NAME</name></workspace>
 REQUEST_DATA
-
-
-
-
 
 echo Add database
 curl -v http://geoserver-ipsius.rhcloud.com/rest/workspaces/test-ipsius/datastores -XPOST \
@@ -26,4 +23,3 @@ curl -v http://geoserver-ipsius.rhcloud.com/rest/workspaces/test-ipsius/datastor
 REQUEST_DATA
 
 SKIP_THIS
-
