@@ -24,8 +24,17 @@ unzip ../geoserver.war -d webapps/ROOT
 echo Inject OpenShift configuration action hooks into repository
 cp --recursive --preserve=mode ../resources/openshift-config/. ./.openshift/
 
-echo Inject Geoserver configuration into data directory
-cp --recursive --preserve=mode ../resources/geoserver-config/. ./webapps/ROOT/data/
+echo Configure default Geoserver admin password
+cat << END_OF_USERS_CONFIG > ./webapps/ROOT/data/security/usergroup/default/users.xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<userRegistry xmlns="http://www.geoserver.org/security/users" version="1.0">
+  <users>
+    <user enabled="true" name="admin" password="digest1:67WqB2IPYhuk+mtPGubp1Fqau94vVbVj507q1GmBEEjBxAwcfXehEFfYGqlheBBe"/>
+    <!-- default password pw=admin -->
+  </users>
+  <groups/>
+</userRegistry>
+END_OF_USERS_CONFIG
 
 echo Commit changes to repository
 git add -A .
