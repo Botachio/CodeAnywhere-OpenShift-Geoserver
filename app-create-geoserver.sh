@@ -1,14 +1,23 @@
 #!/bin/bash
 
-echo Create and configure scaling OpenShift application
-rhc app create geoserver tomcat7 postgresql-9 --scaling --gear-size small.highcpu --region aws-eu-west-1 --repo OpenShift
-rhc cartridge scale tomcat7 --app geoserver --max 1
+echo Configuration
+OPENSHIFT_APPLICATION_NAME=geoserver
+GEOSERVER_WORKSPACE_NAME=ipsius
 
-if ! [ -f "geoserver.war"  ]; then
-  echo Download and extract Geoserver webarchive
-  wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.8.2/geoserver-2.8.2-war.zip
-  unzip geoserver-2.8.2-war.zip geoserver.war
-  rm geoserver-2.8.2-war.zip
+echo Check existing repository
+if ! test -d "OpenShift"; then
+
+  echo Create and configure scaling OpenShift application
+  rhc app create $OPENSHIFT_APPLICATION_NAME tomcat7 postgresql-9 --scaling --gear-size small.highcpu --region aws-eu-west-1 --repo OpenShift
+  rhc cartridge scale tomcat7 --app $OPENSHIFT_APPLICATION_NAME --max 1
+
+  echo Download and extract Geoserver webarchive if not present
+  if ! test -f "geoserver.war"; then
+    wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.8.2/geoserver-2.8.2-war.zip
+    unzip geoserver-2.8.2-war.zip geoserver.war
+    rm geoserver-2.8.2-war.zip
+  fi
+
 fi
 
 echo Work on OpenShift repository
@@ -44,40 +53,37 @@ echo Push repository to OpenShift and trigger deployment
 echo ... this may take some time ...
 git push
 
-echo Configure Geoserver
-GEOSERVER_WORKSPACE_NAME=ipsius
-
 echo Fetch configuration from OpenShift
 . <(rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB -e ^OPENSHIFT_APP' | grep ^OPENSHIFT_[A-Z_]*=)
 
-echo Wait for Geoserver to be available then press Enter
-read dummy
+echo Wait for Geoserver service...
+while test $(curl --silent --output /dev/null --write-out "%{http_code}" https://$OPENSHIFT_APP_DNS/rest -u admin:pw=admin) -eq 503; do
+  echo ...
+  sleep 1
+done
 
 echo Add workspace
-curl http://$OPENSHIFT_APP_DNS/rest/workspaces -XPOST \
--u admin:pw=admin \
--H "Content-type: text/xml" \
--d @- << REQUEST_DATA
+curl https://$OPENSHIFT_APP_DNS/rest/workspaces -XPOST -u admin:pw=admin \
+-H "Content-type: text/xml" -d @- << REQUEST_DATA
 <workspace>
   <name>$GEOSERVER_WORKSPACE_NAME</name>
 </workspace>
 REQUEST_DATA
 
 echo Add database
-curl http://$OPENSHIFT_APP_DNS/rest/workspaces/$GEOSERVER_WORKSPACE_NAME/datastores -XPOST \
--u admin:pw=admin \
--H "Content-type: text/xml" \
--d @- << REQUEST_DATA
+curl https://$OPENSHIFT_APP_DNS/rest/workspaces/$GEOSERVER_WORKSPACE_NAME/datastores -XPOST -u admin:pw=admin \
+-H "Content-type: text/xml" -d @- << REQUEST_DATA
 <dataStore>
   <name>PostGIS</name>
   <type>PostGIS</type>
   <connectionParameters>
+    <dbtype>postgis</dbtype>
     <host>$OPENSHIFT_POSTGRESQL_DB_HOST</host>
     <port>$OPENSHIFT_POSTGRESQL_DB_PORT</port>
-    <database>$OPENSHIFT_APP_NAME</database>
     <user>$OPENSHIFT_POSTGRESQL_DB_USERNAME</user>
     <passwd>$OPENSHIFT_POSTGRESQL_DB_PASSWORD</passwd>
-    <dbtype>postgis</dbtype>
+    <namespace>$OPENSHIFT_POSTGRESQL_DB_HOST/$GEOSERVER_WORKSPACE_NAME</namespace>
+    <database>$OPENSHIFT_APP_NAME</database>
   </connectionParameters>
 </dataStore>
 REQUEST_DATA
@@ -85,4 +91,3 @@ REQUEST_DATA
 echo Done
 
 echo Default Geoserver admin password pw=admin should be changed!
-
