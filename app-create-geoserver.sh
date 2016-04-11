@@ -44,12 +44,14 @@ echo Push repository to OpenShift and trigger deployment
 echo ... this may take some time ...
 git push
 
-echo Done, configuring Geoserver ...
-
+echo Configure Geoserver
 GEOSERVER_WORKSPACE_NAME=ipsius
 
 echo Fetch configuration from OpenShift
 . <(rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB -e ^OPENSHIFT_APP' | grep ^OPENSHIFT_[A-Z_]*=)
+
+echo Wait for Geoserver to come online
+while ! ping -c1 $OPENSHIFT_APP_DNS &>/dev/null; do :; done
 
 echo Add workspace
 curl http://$OPENSHIFT_APP_DNS/rest/workspaces -XPOST \
@@ -80,5 +82,9 @@ curl http://$OPENSHIFT_APP_DNS/rest/workspaces/$GEOSERVER_WORKSPACE_NAME/datasto
 </dataStore>
 REQUEST_DATA
 
-echo Geoserver set up with embedded PostGIS database
+echo Done
+
 echo Default Geoserver admin password pw=admin should be changed!
+
+echo Default Geoserver admin password pw=admin should be changed!
+
