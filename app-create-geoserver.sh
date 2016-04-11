@@ -41,12 +41,44 @@ git add -A .
 git commit -am "scripted app creation"
 
 echo Push repository to OpenShift and trigger deployment
+echo ... this may take some time ...
 git push
 
-echo Done
+echo Done, configuring Geoserver ...
 
-echo Information on database -----------------------------------------------
-rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB -e ^PG | sort'
-echo -----------------------------------------------------------------------
+GEOSERVER_WORKSPACE_NAME=ipsius
 
+echo Fetch configuration from OpenShift
+. <(rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB -e ^OPENSHIFT_APP' | grep ^OPENSHIFT_[A-Z_]*=)
+
+echo Add workspace
+curl http://$OPENSHIFT_APP_DNS/rest/workspaces -XPOST \
+-u admin:pw=admin \
+-H "Content-type: text/xml" \
+-d @- << REQUEST_DATA
+<workspace>
+  <name>$GEOSERVER_WORKSPACE_NAME</name>
+</workspace>
+REQUEST_DATA
+
+echo Add database
+curl http://$OPENSHIFT_APP_DNS/rest/workspaces/$GEOSERVER_WORKSPACE_NAME/datastores -XPOST \
+-u admin:pw=admin \
+-H "Content-type: text/xml" \
+-d @- << REQUEST_DATA
+<dataStore>
+  <name>PostGIS</name>
+  <type>PostGIS</type>
+  <connectionParameters>
+    <host>$OPENSHIFT_POSTGRESQL_DB_HOST</host>
+    <port>$OPENSHIFT_POSTGRESQL_DB_POST</port>
+    <database>$OPENSHIFT_APP_NAME</database>
+    <user>$OPENSHIFT_POSTGRESQL_DB_USERNAME</user>
+    <passwd>$OPENSHIFT_POSTGRESQL_DB_PASSWORD</passwd>
+    <dbtype>postgis</dbtype>
+  </connectionParameters>
+</dataStore>
+REQUEST_DATA
+
+echo Geoserver set up with embedded PostGIS database
 echo Default Geoserver admin password pw=admin should be changed!
