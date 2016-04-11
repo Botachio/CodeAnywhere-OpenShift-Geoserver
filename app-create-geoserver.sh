@@ -50,8 +50,8 @@ GEOSERVER_WORKSPACE_NAME=ipsius
 echo Fetch configuration from OpenShift
 . <(rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB -e ^OPENSHIFT_APP' | grep ^OPENSHIFT_[A-Z_]*=)
 
-echo Wait for Geoserver to come online
-while ! ping -c1 $OPENSHIFT_APP_DNS &>/dev/null; do :; done
+echo Wait for Geoserver to be available then press Enter
+read dummy
 
 echo Add workspace
 curl http://$OPENSHIFT_APP_DNS/rest/workspaces -XPOST \
@@ -73,7 +73,7 @@ curl http://$OPENSHIFT_APP_DNS/rest/workspaces/$GEOSERVER_WORKSPACE_NAME/datasto
   <type>PostGIS</type>
   <connectionParameters>
     <host>$OPENSHIFT_POSTGRESQL_DB_HOST</host>
-    <port>$OPENSHIFT_POSTGRESQL_DB_POST</port>
+    <port>$OPENSHIFT_POSTGRESQL_DB_PORT</port>
     <database>$OPENSHIFT_APP_NAME</database>
     <user>$OPENSHIFT_POSTGRESQL_DB_USERNAME</user>
     <passwd>$OPENSHIFT_POSTGRESQL_DB_PASSWORD</passwd>
@@ -83,8 +83,6 @@ curl http://$OPENSHIFT_APP_DNS/rest/workspaces/$GEOSERVER_WORKSPACE_NAME/datasto
 REQUEST_DATA
 
 echo Done
-
-echo Default Geoserver admin password pw=admin should be changed!
 
 echo Default Geoserver admin password pw=admin should be changed!
 
