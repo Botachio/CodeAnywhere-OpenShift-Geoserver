@@ -27,7 +27,7 @@ echo Prevent Maven build on deploy
 rm pom.xml
 
 echo Extract Geoserver webarchive into webapps directory
-unzip ../geoserver.war -d webapps/ROOT
+unzip -uo ../geoserver.war -d webapps/ROOT
 # seems geoserver needs to be ROOT application for HAProxy to work...
 
 echo Inject OpenShift configuration action hooks into repository
@@ -57,8 +57,11 @@ echo Fetch configuration from OpenShift
 . <(rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB -e ^OPENSHIFT_APP' | grep ^OPENSHIFT_[A-Z_]*=)
 
 echo Wait for Geoserver service...
-while test $(curl --silent --output /dev/null --write-out "%{http_code}" https://$OPENSHIFT_APP_DNS/rest -u admin:pw=admin) -eq 503; do
-  echo ...
+# Not ideal, waiting for status code 200 (may hang)!
+while true; do
+  status=$(curl --silent --output /dev/stderr --write-out "%{http_code}" https://$OPENSHIFT_APP_DNS/rest/workspaces -u admin:pw=admin)
+  echo HTTP status is $status...
+  if test $status -eq 200; then break; fi
   sleep 1
 done
 
