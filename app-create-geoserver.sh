@@ -56,14 +56,14 @@ git push
 echo Fetch configuration from OpenShift
 . <(rhc ssh -- 'env | grep -e ^OPENSHIFT_POSTGRESQL_DB -e ^OPENSHIFT_APP' | grep ^OPENSHIFT_[A-Z_]*=)
 
-echo Wait for Geoserver service...
+echo Wait for Geoserver service
 # Not ideal, waiting for status code 200 (may hang)!
-while true; do
-  status=$(curl --silent --output /dev/stderr --write-out "%{http_code}" https://$OPENSHIFT_APP_DNS/rest/workspaces -u admin:pw=admin)
+while test "$status" -ne 200; do
+  status=$(curl --silent --output /dev/null --write-out "%{http_code}" https://$OPENSHIFT_APP_DNS/rest/workspaces -u admin:pw=admin)
   echo HTTP status is $status...
-  if test $status -eq 200; then break; fi
   sleep 1
 done
+sleep 5
 
 echo Add workspace
 curl https://$OPENSHIFT_APP_DNS/rest/workspaces -XPOST -u admin:pw=admin \
@@ -72,6 +72,7 @@ curl https://$OPENSHIFT_APP_DNS/rest/workspaces -XPOST -u admin:pw=admin \
   <name>$GEOSERVER_WORKSPACE_NAME</name>
 </workspace>
 REQUEST_DATA
+sleep 5
 
 echo Add database
 curl https://$OPENSHIFT_APP_DNS/rest/workspaces/$GEOSERVER_WORKSPACE_NAME/datastores -XPOST -u admin:pw=admin \
